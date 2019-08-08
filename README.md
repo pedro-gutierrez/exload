@@ -1,20 +1,14 @@
 # F3load
 
-To start your Phoenix server:
+A load test tool written in Elixir.
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+The goals for this tool are :
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+[] To define arbitrary test scenarios based in language agnostic protocols (http, sqs)
+[] To schedule load tests, scaling the number of virtual users and iteratios, like in k6.
+[] To run those load tests concurrently
+[] To monitor progress of currently running load tests and to be able to pause/cancel them
+[] To keep a history of past load test runs and gather basic metrics such as iteration througput and percentiles of latency
+[] To export aggregated performance metrics so that it can be easily plotted
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
