@@ -7,19 +7,20 @@ defmodule F3load.Application do
 
   def start(_type, _args) do
     import Supervisor.Spec
-    
+
     # Build a consumer per configured queue
-    children = [ F3loadWeb.Endpoint |
-      F3load.Sqs.consumers()
+    children = F3load.Sqs.consumers()
       |> Enum.map(fn [name: q, opts: opts] ->
-        worker(F3load.SqsConsumer, [q|opts], name: q)
+        worker(F3load.Sqs.Consumer, [q|opts], name: q)
       end)
-    ]
-    
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: F3load.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link([
+      F3loadWeb.Endpoint,
+      F3load.Scenarios
+    ] ++ children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
