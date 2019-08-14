@@ -1,4 +1,4 @@
-# F3load
+# Exload
 
 A load test tool written in Elixir.
 
