@@ -1,5 +1,5 @@
 
-defmodule F3load.Scenarios do
+defmodule Exload.Scenarios do
   @moduledoc """
   A supervisor for all scenarios
   """
@@ -14,7 +14,12 @@ defmodule F3load.Scenarios do
   function will return an error.
   """
   def run(scenario, vus, its) do
-    F3load.Scenarios.add(scenario, vus, its)
+    case add(scenario, vus, its) do
+      {:ok, _} ->
+        Exload.Scenario.Manager.scale(scenario)
+      other ->
+        other
+    end
   end
 
   # List all scenarios running
@@ -57,11 +62,8 @@ defmodule F3load.Scenarios do
     )
   end
 
-  @doc """
-  Start a new scenario
-  """
-  def add(scenario, vus, its) do
-    spec = {F3load.Scenario, scenario: scenario, vus: vus, iterations: its}
+  defp add(scenario, vus, its) do
+    spec = {Exload.Scenario, scenario: scenario, vus: vus, iterations: its}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 

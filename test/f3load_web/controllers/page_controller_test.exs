@@ -1,5 +1,5 @@
-defmodule F3loadWeb.PageControllerTest do
-  use F3loadWeb.ConnCase
+defmodule ExloadWeb.PageControllerTest do
+  use ExloadWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

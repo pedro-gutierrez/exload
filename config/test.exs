@@ -1,16 +1,16 @@
 use Mix.Config
 
 # Configure your database
-config :f3load, F3load.Repo,
+config :Exload, Exload.Repo,
   username: "postgres",
   password: "postgres",
-  database: "f3load_test",
+  database: "Exload_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :f3load, F3loadWeb.Endpoint,
+config :Exload, ExloadWeb.Endpoint,
   http: [port: 4002],
   server: false
 

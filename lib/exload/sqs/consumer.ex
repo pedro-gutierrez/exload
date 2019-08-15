@@ -1,12 +1,12 @@
 # A simple SQS consumer GenServer
 # that continuously reads from a given queue
 # and yields received messages to a different process
-defmodule F3load.Sqs.Consumer do
+defmodule Exload.Sqs.Consumer do
   use GenServer
 
   # To be called from a supervisor spec
   def start_link(queue, m, f) do
-    __MODULE__ |> GenServer.start_link([F3load.Sqs.config(), m, f, queue])
+    __MODULE__ |> GenServer.start_link([Exload.Sqs.config(), m, f, queue])
   end
 
 
@@ -49,7 +49,7 @@ defmodule F3load.Sqs.Consumer do
 
   # Receive, yield and restart
   defp recv(%Data{config: config, callback: {mod, fun}, queue: queue}=data) do
-    case config |> F3load.Sqs.receive(queue) do
+    case config |> Exload.Sqs.receive(queue) do
       {:ok, messages} ->
         # Deliver the messages
         # in a separate process.

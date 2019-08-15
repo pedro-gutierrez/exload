@@ -1,7 +1,7 @@
-defmodule F3loadWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :f3load
+defmodule ExloadWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :Exload
 
-  socket "/socket", F3loadWeb.UserSocket,
+  socket "/socket", ExloadWeb.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -11,7 +11,7 @@ defmodule F3loadWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :f3load,
+    from: :Exload,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
@@ -39,8 +39,8 @@ defmodule F3loadWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_f3load_key",
+    key: "_Exload_key",
     signing_salt: "sHK62xJg"
 
-  plug F3loadWeb.Router
+  plug ExloadWeb.Router
 end

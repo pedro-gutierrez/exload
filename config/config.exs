@@ -7,15 +7,15 @@
 # General application configuration
 use Mix.Config
 
-config :f3load,
-  ecto_repos: [F3load.Repo]
+config :Exload,
+  ecto_repos: [Exload.Repo]
 
 # Configures the endpoint
-config :f3load, F3loadWeb.Endpoint,
+config :Exload, ExloadWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "BxLAgAEkgDs4af56M86t2zgKEMe8Psr15HgdZYRzjEH0CAvvu1weQyTEa1gnWNBI",
-  render_errors: [view: F3loadWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: F3load.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: ExloadWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Exload.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,

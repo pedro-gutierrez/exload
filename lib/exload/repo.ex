@@ -1,5 +1,5 @@
-defmodule F3load.Repo do
+defmodule Exload.Repo do
   use Ecto.Repo,
-    otp_app: :f3load,
+    otp_app: :Exload,
     adapter: Ecto.Adapters.Postgres
 end

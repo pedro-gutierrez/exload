@@ -1,11 +1,11 @@
-defmodule F3loadWeb.Gettext do
+defmodule ExloadWeb.Gettext do
   @moduledoc """
   A module providing Internationalization with a gettext-based API.
 
   By using [Gettext](https://hexdocs.pm/gettext),
   your module gains a set of macros for translations, for example:
 
-      import F3loadWeb.Gettext
+      import ExloadWeb.Gettext
 
       # Simple translation
       gettext("Here is the string to translate")
@@ -20,5 +20,5 @@ defmodule F3loadWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :f3load
+  use Gettext, otp_app: :Exload
 end

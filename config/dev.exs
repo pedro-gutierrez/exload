@@ -2,7 +2,7 @@ use Mix.Config
 
 # Configure queues to consume from
 # and their associated callbacks
-config :f3load, F3load.Sqs,
+config :Exload, Exload.Sqs,
   host: "127.0.0.1",
   port: 7890,
   scheme: "http",
@@ -10,15 +10,15 @@ config :f3load, F3load.Sqs,
   secret_key: "secret",
   stacks: [
     local: [
-      queue1: [ F3load.Application, :print_sqs ]
+      queue1: [ Exload.Application, :print_sqs ]
     ]
   ]
 
 # Configure your database
-config :f3load, F3load.Repo,
+config :Exload, Exload.Repo,
   username: "postgres",
   password: "postgres",
-  database: "f3load_dev",
+  database: "Exload_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -29,7 +29,7 @@ config :f3load, F3load.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :f3load, F3loadWeb.Endpoint,
+config :Exload, ExloadWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -69,13 +69,13 @@ config :f3load, F3loadWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :f3load, F3loadWeb.Endpoint,
+config :Exload, ExloadWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/f3load_web/{live,views}/.*(ex)$",
-      ~r"lib/f3load_web/templates/.*(eex)$"
+      ~r"lib/Exload_web/{live,views}/.*(ex)$",
+      ~r"lib/Exload_web/templates/.*(eex)$"
     ]
   ]
 

@@ -1,3 +1,3 @@
-defmodule F3loadWeb.LayoutViewTest do
-  use F3loadWeb.ConnCase, async: true
+defmodule ExloadWeb.LayoutViewTest do
+  use ExloadWeb.ConnCase, async: true
 end

@@ -1,6 +1,6 @@
-defmodule F3load do
+defmodule Exload do
   @moduledoc """
-  F3load keeps the contexts that define your domain
+  Exload keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

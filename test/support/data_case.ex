@@ -1,4 +1,4 @@
-defmodule F3load.DataCase do
+defmodule Exload.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule F3load.DataCase do
 
   using do
     quote do
-      alias F3load.Repo
+      alias Exload.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import F3load.DataCase
+      import Exload.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(F3load.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Exload.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(F3load.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Exload.Repo, {:shared, self()})
     end
 
     :ok

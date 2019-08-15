@@ -1,5 +1,5 @@
-defmodule F3loadWeb.ErrorView do
-  use F3loadWeb, :view
+defmodule ExloadWeb.ErrorView do
+  use ExloadWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

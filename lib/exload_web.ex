@@ -1,12 +1,12 @@
-defmodule F3loadWeb do
+defmodule ExloadWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use F3loadWeb, :controller
-      use F3loadWeb, :view
+      use ExloadWeb, :controller
+      use ExloadWeb, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,19 +19,19 @@ defmodule F3loadWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: F3loadWeb
+      use Phoenix.Controller, namespace: ExloadWeb
 
       import Plug.Conn
-      import F3loadWeb.Gettext
-      alias F3loadWeb.Router.Helpers, as: Routes
+      import ExloadWeb.Gettext
+      alias ExloadWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/f3load_web/templates",
-        namespace: F3loadWeb
+        root: "lib/Exload_web/templates",
+        namespace: ExloadWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -39,9 +39,9 @@ defmodule F3loadWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import F3loadWeb.ErrorHelpers
-      import F3loadWeb.Gettext
-      alias F3loadWeb.Router.Helpers, as: Routes
+      import ExloadWeb.ErrorHelpers
+      import ExloadWeb.Gettext
+      alias ExloadWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -56,7 +56,7 @@ defmodule F3loadWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import F3loadWeb.Gettext
+      import ExloadWeb.Gettext
     end
   end
 

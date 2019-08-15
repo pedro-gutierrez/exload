@@ -1,4 +1,4 @@
-defmodule F3loadWeb.ConnCase do
+defmodule ExloadWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,18 +19,18 @@ defmodule F3loadWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      alias F3loadWeb.Router.Helpers, as: Routes
+      alias ExloadWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint F3loadWeb.Endpoint
+      @endpoint ExloadWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(F3load.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Exload.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(F3load.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Exload.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

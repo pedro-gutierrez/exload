@@ -1,4 +1,4 @@
-defmodule F3load.Scenario do
+defmodule Exload.Scenario do
   @moduledoc """
   A supervisor for a single scenario. A scenario
   is composed of a controller process, and
@@ -21,8 +21,8 @@ defmodule F3load.Scenario do
   @impl true
   def init(args) do
     Supervisor.init([
-      {F3load.Scenario.Manager, args},
-      {F3load.Scenario.Vus, args}
+      {Exload.Scenario.Manager, args},
+      {Exload.Scenario.Vus, args}
     ], strategy: :one_for_one)
   end
 

@@ -1,4 +1,4 @@
-defmodule F3loadWeb.ErrorHelpers do
+defmodule ExloadWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -36,9 +36,9 @@ defmodule F3loadWeb.ErrorHelpers do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(F3loadWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(ExloadWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(F3loadWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(ExloadWeb.Gettext, "errors", msg, opts)
     end
   end
 end

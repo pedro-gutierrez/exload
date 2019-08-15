@@ -4,7 +4,7 @@
 # the API dead simpe, Messages, once received, are automatically
 # deleted.
 #
-defmodule F3load.Sqs do
+defmodule Exload.Sqs do
   require Record
 
   # Use the record from Erlcloud that holds
@@ -12,7 +12,7 @@ defmodule F3load.Sqs do
   Record.defrecord :aws_config, Record.extract(:aws_config, from_lib: "erlcloud/include/erlcloud_aws.hrl")
 
   defp sqs_env do
-    Application.get_env(:f3load, F3load.Sqs)
+    Application.get_env(:Exload, Exload.Sqs)
   end
 
   # Build the list of consumers, so that we can

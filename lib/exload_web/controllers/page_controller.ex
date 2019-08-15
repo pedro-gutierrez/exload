@@ -1,5 +1,5 @@
-defmodule F3loadWeb.PageController do
-  use F3loadWeb, :controller
+defmodule ExloadWeb.PageController do
+  use ExloadWeb, :controller
 
   def index(conn, _params) do
     render(conn, "index.html")

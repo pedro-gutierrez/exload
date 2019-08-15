@@ -1,9 +1,9 @@
-defmodule F3load.MixProject do
+defmodule Exload.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :f3load,
+      app: :Exload,
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule F3load.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {F3load.Application, []},
+      mod: {Exload.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -47,7 +47,8 @@ defmodule F3load.MixProject do
       {:eini, ">= 0.0.0"},
       {:jsx, ">= 0.0.0"},
       {:lhttpc, ">= 0.0.0"},
-      {:erlcloud, ">= 0.0.0"}
+      {:erlcloud, ">= 0.0.0"},
+      {:gen_state_machine, ">= 2.0.5"}
     ]
   end
 

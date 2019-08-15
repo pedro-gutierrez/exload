@@ -1,3 +1,3 @@
-defmodule F3loadWeb.PageViewTest do
-  use F3loadWeb.ConnCase, async: true
+defmodule ExloadWeb.PageViewTest do
+  use ExloadWeb.ConnCase, async: true
 end

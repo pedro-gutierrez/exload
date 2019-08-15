@@ -1,8 +1,8 @@
-defmodule F3loadWeb.UserSocket do
+defmodule ExloadWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", F3loadWeb.RoomChannel
+  # channel "room:*", ExloadWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -26,7 +26,7 @@ defmodule F3loadWeb.UserSocket do
   # Would allow you to broadcast a "disconnect" event and terminate
   # all active sockets and channels for a given user:
   #
-  #     F3loadWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
+  #     ExloadWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil

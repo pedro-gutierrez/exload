@@ -1,4 +1,4 @@
-defmodule F3loadWeb.ChannelCase do
+defmodule ExloadWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule F3loadWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint F3loadWeb.Endpoint
+      @endpoint ExloadWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(F3load.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Exload.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(F3load.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Exload.Repo, {:shared, self()})
     end
 
     :ok

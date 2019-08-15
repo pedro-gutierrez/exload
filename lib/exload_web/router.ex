@@ -1,5 +1,5 @@
-defmodule F3loadWeb.Router do
-  use F3loadWeb, :router
+defmodule ExloadWeb.Router do
+  use ExloadWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,14 +13,14 @@ defmodule F3loadWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", F3loadWeb do
+  scope "/", ExloadWeb do
     pipe_through :browser
 
     get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", F3loadWeb do
+  # scope "/api", ExloadWeb do
   #   pipe_through :api
   # end
 end

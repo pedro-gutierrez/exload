@@ -1,4 +1,4 @@
-defmodule F3load.Application do
+defmodule Exload.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -9,24 +9,24 @@ defmodule F3load.Application do
     import Supervisor.Spec
 
     # Build a consumer per configured queue
-    children = F3load.Sqs.consumers()
+    children = Exload.Sqs.consumers()
       |> Enum.map(fn [name: q, opts: opts] ->
-        worker(F3load.Sqs.Consumer, [q|opts], name: q)
+        worker(Exload.Sqs.Consumer, [q|opts], name: q)
       end)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: F3load.Supervisor]
+    opts = [strategy: :one_for_one, name: Exload.Supervisor]
     Supervisor.start_link([
-      F3loadWeb.Endpoint,
-      F3load.Scenarios
+      ExloadWeb.Endpoint,
+      Exload.Scenarios
     ] ++ children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    F3loadWeb.Endpoint.config_change(changed, removed)
+    ExloadWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 
