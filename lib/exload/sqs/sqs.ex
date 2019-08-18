@@ -19,11 +19,17 @@ defmodule Exload.Sqs do
   # add workers under a supervision tree
   def consumers do
     env = sqs_env()
-    env[:stacks] |> Enum.reduce([], fn {s, queues}, acc0 ->
-      queues |> Enum.reduce(acc0, fn {q, opts}, acc1 ->
-        [[name: String.to_atom("#{s}-#{q}"), opts: opts]|acc1]
-      end)
-    end)
+    case env[:stacks] do
+      :nil ->
+        IO.puts "no SQS stacks configured"
+        []
+      stacks ->
+        stacks |> Enum.reduce([], fn {s, queues}, acc0 ->
+          queues |> Enum.reduce(acc0, fn {q, opts}, acc1 ->
+            [[name: String.to_atom("#{s}-#{q}"), opts: opts]|acc1]
+          end)
+        end)
+    end
   end
 
 
@@ -59,11 +65,19 @@ defmodule Exload.Sqs do
     # Convert the queue name to a charlist
     # so that Erlang is happy
     queue_name = queue |> to_charlist
+  
+    recv_result = try do 
+      queue_name |> :erlcloud_sqs.receive_message(:all, max_messages, visibility_timeout, wait_time_seconds, cfg)
+    rescue 
+      e in ErlangError -> e.original
+    end
+      
+
 
     # Get a batch of messages
-    case queue_name |> :erlcloud_sqs.receive_message(:all, max_messages, visibility_timeout, wait_time_seconds, cfg) do
-      {:aws_error, reason} ->
-        {:error, reason}
+    case recv_result do
+      {:aws_error, {:socket_error,  {:econnrefused, _}}} ->
+        {:error, :econnrefused}
       [messages: batch] ->
         # If no messages were returned
         # then finish

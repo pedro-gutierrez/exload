@@ -54,23 +54,25 @@ defmodule Exload.Sqs.Consumer do
         # Deliver the messages
         # in a separate process.
         # TODO: Monitor it, in case
-        # the delivery failed
+        # the delivery failed, or send it to a dynamic
+        # supervisor
         _pid = spawn(mod, fun, [queue, messages])
-        :ok
+        
+        # Remember ourselves to start listening
+        # again for new messages
+        self() |> send(:receive)
 
       :nodata ->
-        # Do nothing
-        :ok
-      {:error, reason} ->
-        # log it, for now, or send it to an error
-        # channel
-        IO.inspect reason
-        :ok
+        # Remember ourselves to start listening
+        # again for new messages
+        self() |> send(:receive)
+          
+      {:error, :econnrefused} ->
+        # Wait 1 second before trying to fetch
+        # again. TODO: exponential backoff 
+        IO.puts("connection to SQS refused")  
+        self() |> Process.send_after(:receive, 1000)
     end
-
-    # Remember ourselves to start listening
-    # again for new messages
-    self() |> send(:receive)
     {:noreply, data}
   end
 
