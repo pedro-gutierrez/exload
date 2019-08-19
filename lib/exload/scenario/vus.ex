@@ -3,9 +3,10 @@ defmodule Exload.Scenario.Vus do
   A supervisor module for all virtual users involved
   in a scenario
   """
-
+  
   use DynamicSupervisor
 
+  defstruct [spec: %Exload{}, pending: 0, error: 0]
 
   # Defines the name under which this supervisor will
   # be registered
@@ -17,8 +18,8 @@ defmodule Exload.Scenario.Vus do
   Start this supervisor. Initially it will not have any
   children, until it is scaled up
   """
-  def start_link(args) do
-    DynamicSupervisor.start_link(__MODULE__, args, name: registered_name(args[:scenario]))
+  def start_link(%Exload{scenario: name}=args) do
+    DynamicSupervisor.start_link(__MODULE__, args, name: registered_name(name))
   end
 
   @doc """
@@ -34,16 +35,12 @@ defmodule Exload.Scenario.Vus do
   @doc """
   Add that amount of virtual users to the given scenario
   """
-  def add(%{:scenario => scenario,
-            :vus => vus,
-            :iterations => its}) do
-    spec = {Exload.Scenario.Vu, scenario: scenario, vus: vus, iterations: its}
+  def add(%__MODULE__{spec: %Exload{scenario: scenario, vus: vus}=params}) do
+    spec = {Exload.Scenario.Vu, params}
     vus_supervisor = registered_name(scenario)
     1..vus |> Enum.each(fn _ ->
       DynamicSupervisor.start_child(vus_supervisor, spec)
     end)
   end
-
-
 
 end

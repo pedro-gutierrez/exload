@@ -11,7 +11,7 @@ defmodule Exload.Scenario do
   Start this supervisor and add it to the supervision
   tree
   """
-  def start_link([scenario: name, vus: _vus, iterations: _its]=args) do
+  def start_link(%Exload{scenario: name}=args) do
     Supervisor.start_link(__MODULE__, args, name: name)
   end
 

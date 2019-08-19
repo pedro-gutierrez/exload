@@ -10,8 +10,8 @@ defmodule ExloadTest do
     setup [:start_sqs]
 
     test "should start scenarios once" do
-      assert :ok = Exload.Scenarios.run(:test, 1, 1)
-      assert {:error, _} = Exload.Scenarios.run(:test, 1, 1)
+      assert :ok = Exload.run(:test, 1, 1)
+      assert {:error, _} = Exload.run(:test, 1, 1)
     end
   end
 

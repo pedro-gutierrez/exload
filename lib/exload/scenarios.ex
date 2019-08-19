@@ -7,42 +7,6 @@ defmodule Exload.Scenarios do
   use DynamicSupervisor
 
   @doc """
-  Start a new run of the given scenario, for the
-  given number of virtual users and the given number of
-  iterations, for each user. By default, if an instance
-  of that scenario is already running, or paused, this
-  function will return an error.
-  """
-  def run(scenario, vus, its) do
-    case add(scenario, vus, its) do
-      {:ok, _} ->
-        Exload.Scenario.Manager.scale(scenario)
-      other ->
-        other
-    end
-  end
-
-  # List all scenarios running
-  def list do
-    {:error, :not_implemented}
-  end
-
-  # Pause a scenario.
-  def pause(_scenario) do
-    {:error, :not_implemented}
-  end
-
-  # Resume a scenario
-  def resume(_scenario) do
-    {:error, :not_implemented}
-  end
-
-  # Cancel a scenario
-  def cancel(_scenario) do
-    {:error, :not_implemented}
-  end
-
-  @doc """
   Start this supervisor and add it to the supervision
   tree
   """
@@ -61,9 +25,12 @@ defmodule Exload.Scenarios do
       extra_arguments: args
     )
   end
-
-  defp add(scenario, vus, its) do
-    spec = {Exload.Scenario, scenario: scenario, vus: vus, iterations: its}
+  
+  @doc """
+  Start a new scenario for the given params
+  """
+  def add(params) do
+    spec = {Exload.Scenario, params}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 

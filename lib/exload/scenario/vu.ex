@@ -7,6 +7,7 @@ defmodule Exload.Scenario.Vu do
   use GenStateMachine, callback_mode: :state_functions
 
   alias Exload.Scenario.Manager
+  alias Exload.Scenario.Vus
 
 
   @doc """
@@ -21,7 +22,7 @@ defmodule Exload.Scenario.Vu do
   """
   @impl true
   def init(args) do
-    {:ok, :idle, Enum.into(args, %{}), [{:next_event, :internal, :notify}]}
+    {:ok, :idle, args, [{:next_event, :internal, :notify}]}
   end
 
 
@@ -29,11 +30,9 @@ defmodule Exload.Scenario.Vu do
   Notify the manager process that the virtual user
   process is ready
   """
-  def idle(:internal, :notify, %{:scenario => scenario}=data) do
+  def idle(:internal, :notify, %Vus{spec: %Exload{scenario: scenario}}=data) do
     :ok = Manager.notify_vu_ready(scenario)
     {:next_state, :idle, data}
   end
-
-
 
 end

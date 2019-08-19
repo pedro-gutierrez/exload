@@ -5,7 +5,8 @@ defmodule Exload.Scenario.Manager do
   """
 
   use GenStateMachine, callback_mode: :state_functions
-
+  
+  alias Exload.Scenario.Vus
 
   defp registered_name(scenario) do
     "#{scenario}_manager" |> String.to_atom
@@ -23,8 +24,8 @@ defmodule Exload.Scenario.Manager do
   @doc """
   Start this scenario manager and add it to the supervision tree
   """
-  def start_link(args)  do
-    GenStateMachine.start_link(__MODULE__, args, name: registered_name(args[:scenario]))
+  def start_link(%Exload{scenario: name}=args)  do
+    GenStateMachine.start_link(__MODULE__, args, name: registered_name(name))
   end
 
   @doc """
@@ -37,34 +38,34 @@ defmodule Exload.Scenario.Manager do
   end
 
   @impl true
-  def init(args) do
-    %{ :vus => vus } = data = args |> Enum.into(%{})
-    {:ok, :idle, Map.put(data, :rem, vus)}
+  def init(%Exload{vus: vus}=spec) do
+    data = %Vus{spec: spec, pending: vus}
+    {:ok, :idle, data}
   end
 
   @doc """
   Start scaling the scenario
   """
-  def idle({:call, from}, :scale, %{:rem => vus}=data) do
-    Exload.Scenario.Vus.add(data)
-    {:next_state, :scaling, %{ data | :rem => vus}, [{:reply, from, :ok}]}
+  def idle({:call, from}, :scale, data) do
+    Vus.add(data)
+    {:next_state, :scaling, data, [{:reply, from, :ok}]}
   end
 
   @doc """
   We received a notification from one of the virtual
   user processes that it is ready.
   """
-  def scaling({:call, from}, :vu, %{ :rem => 1 }=data) do
+  def scaling({:call, from}, :vu, %Vus{pending: 1}=data) do
     IO.puts "scaled!"
-    {:next_state, :ready, %{ data | :rem => 0}, [{:reply, from, :ok}]}
+    {:next_state, :ready, %{ data | pending: 0}, [{:reply, from, :ok}]}
   end
 
   @doc """
   We received a notification from one of the virtual
   user processes that it is ready.
   """
-  def scaling({:call, from}, :vu, %{ :rem => rem }=data) do
-    {:next_state, :scaling, %{ data | :rem => rem-1}, [{:reply, from, :ok}]}
+  def scaling({:call, from}, :vu, %Vus{pending: rem}=data) do
+    {:next_state, :scaling, %{ data | pending: rem-1}, [{:reply, from, :ok}]}
   end
 
 
