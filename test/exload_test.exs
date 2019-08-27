@@ -13,6 +13,20 @@ defmodule ExloadTest do
       assert :ok = Exload.run(:test, 1, 1)
       assert {:error, _} = Exload.run(:test, 1, 1)
     end
+
+    test "should return scenario info" do
+      assert :ok = Exload.run(:test, 1, 1)
+      assert {:ok, [
+        scenario: :test,
+        vus: [
+          total: 1,
+          success: 0,
+          running: 1,
+          failed: 0
+        ],
+        iterations: 1,
+      ]} = Exload.info(:test)
+    end
   end
 
 end
