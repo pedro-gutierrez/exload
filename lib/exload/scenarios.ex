@@ -34,4 +34,17 @@ defmodule Exload.Scenarios do
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 
+
+  @doc """
+  Terminates all children. This function might perform
+  badly if there are many scenarios running, which is not 
+  expected anyway
+  """
+  def kill_all() do
+    DynamicSupervisor.which_children(__MODULE__)
+    |> Enum.each(fn {_, pid, _, _} ->
+      DynamicSupervisor.terminate_child(__MODULE__, pid)
+    end)
+  end
+
 end

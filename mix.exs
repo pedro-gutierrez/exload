@@ -48,7 +48,8 @@ defmodule Exload.MixProject do
       {:jsx, ">= 0.0.0"},
       {:lhttpc, ">= 0.0.0"},
       {:erlcloud, ">= 0.0.0"},
-      {:gen_state_machine, ">= 2.0.5"}
+      {:gen_state_machine, ">= 2.0.5"},
+      {:ets, ">= 0.4.0"}
     ]
   end
 

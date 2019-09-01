@@ -9,6 +9,14 @@ defmodule Exload do
 
   defstruct [scenario: :smoke, vus: 1, iterations: 1]  
 
+  @doc """
+  Kill all running scenarios
+  """
+  def kill_all() do
+    Exload.Scenarios.kill_all()
+    :ok
+  end
+
 
   @doc """
   Start a new run of the given scenario, for the
@@ -30,6 +38,22 @@ defmodule Exload do
         other
     end
   end
+
+  @doc """
+  Get a scenario info
+  """
+  def info(scenario) do
+    Exload.Scenario.Manager.info(scenario)
+  end
+
+  @doc """
+  Kill a virtual user in the given scenario. This might be
+  useful when a virtual user gets stuck
+  """
+  def kill(scenario, vu) do
+    Exload.Scenario.Manager.kill(scenario, vu)
+  end
+
 
   # List all scenarios running
   def list do

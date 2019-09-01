@@ -5,8 +5,8 @@ defmodule Exload.Scenario.Vus do
   """
   
   use DynamicSupervisor
+  alias Exload.Scenario.Manager
 
-  defstruct [spec: %Exload{}, pending: 0, error: 0]
 
   # Defines the name under which this supervisor will
   # be registered
@@ -35,7 +35,7 @@ defmodule Exload.Scenario.Vus do
   @doc """
   Add that amount of virtual users to the given scenario
   """
-  def add(%__MODULE__{spec: %Exload{scenario: scenario, vus: vus}=params}) do
+  def add(%Manager{spec: %Exload{scenario: scenario, vus: vus}=params}) do
     spec = {Exload.Scenario.Vu, params}
     vus_supervisor = registered_name(scenario)
     1..vus |> Enum.each(fn _ ->
