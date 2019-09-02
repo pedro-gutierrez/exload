@@ -1,5 +1,16 @@
 use Mix.Config
 
+# Configure test load scenarios
+config :Exload,
+scenarios: [
+    bad: [
+      module: Exload.Samples.Unknown
+    ],
+    sample: [
+      module: Exload.Samples.Sample
+    ]
+  ]
+
 # Configure your database
 config :Exload, Exload.Repo,
   username: "postgres",

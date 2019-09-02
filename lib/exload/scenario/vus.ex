@@ -34,6 +34,7 @@ defmodule Exload.Scenario.Vus do
 
   @doc """
   Add that amount of virtual users to the given scenario
+  TODO: distribute vu workers across all nodes in our cluster
   """
   def add(%Manager{spec: %Exload{scenario: scenario, vus: vus}=params}) do
     spec = {Exload.Scenario.Vu, params}

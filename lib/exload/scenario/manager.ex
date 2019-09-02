@@ -59,6 +59,7 @@ defmodule Exload.Scenario.Manager do
   def init(%Exload{scenario: scenario, vus: vus}=spec) do
     {:ok, bag} = Ets.Bag.new(name: scenario, duplicate: true)
     data = %__MODULE__{spec: spec, bag: bag, pending: vus}
+    :ok = :pg2.create({scenario, :vus})
     {:ok, :idle, data}
   end
 
@@ -79,53 +80,82 @@ defmodule Exload.Scenario.Manager do
     running: running,
     pending: pending
   }=data) do
+    
     ref = Process.monitor(pid)
     {:ok, ^bag} = Ets.Bag.add(bag, {:vu, pid})
     {:ok, ^bag} = Ets.Bag.add(bag, {:ref, ref})
     data = %{ data | pending: pending-1, running: (running+1)}
-    next_state = case pending do
-      1 -> :ready
-      _ -> :scaling
+    case data.pending do
+      0 ->
+        {:next_state, :starting, data, [
+          {:reply, from, :ok}, 
+          {:next_event, :internal, :start_vus}]}
+      _ ->
+        {:keep_state, data, [{:reply, from, :ok}]}
     end
-    {:next_state, next_state, data, [{:reply, from, :ok}]}
+  end
+  
+  @doc """
+  Return the current scenario info
+  """
+  def scaling({:call, from}, :info, data) do
+    {:keep_state, data, [{:reply, from, {:ok, scenario_info(data)}}]}
+  end
+  
+  @doc """
+  Kill some virtual users. Here we limit the max number of vus to 
+  be killed to 10
+  """
+  def scaling({:call, from}, {:kill, vus}, data) do
+    {:keep_state, data, [{:reply, from, kill_vus(vus, data)}]}
+  end
+
+  @doc """
+  Instruct all vus to start performing their iterations
+  """
+  def starting(:internal, :start_vus, %__MODULE__{
+    spec: %Exload{scenario: scenario}
+  }=data) do
+    ## TODO: Instruct all virtual users to start to
+    ## perform their iterations. Since this is a load test,
+    ## we might need a more scalable way to do this
+    {scenario, :vus}
+    |> :pg2.get_members
+    |> Enum.each(fn pid -> 
+      :ok = GenStateMachine.call(pid, :start)
+    end)
+    {:next_state, :running, data}
+  end
+  
+  @doc """
+  Return the current scenario info
+  """
+  def starting({:call, from}, :info, data) do
+    {:keep_state, data, [{:reply, from, {:ok, scenario_info(data)}}]}
+  end
+  
+  @doc """
+  Kill some virtual users. Here we limit the max number of vus to 
+  be killed to 10
+  """
+  def starting({:call, from}, {:kill, vus}, data) do
+    {:keep_state, data, [{:reply, from, kill_vus(vus, data)}]}
   end
 
   @doc """
   Kill some virtual users. Here we limit the max number of vus to 
   be killed to 10
   """
-  def ready({:call, from}, {:kill, vus}, %__MODULE__{bag: bag}=data) 
-  when vus < 11 do
-    {:ok, {pids, _}} = Ets.Bag.match(bag, {:vu, :"$1"}, vus)
-    pids
-    |> Enum.each(fn [pid] ->
-       Process.exit(pid, :kill)
-      end)
-    {:keep_state, data, [{:reply, from, {:ok, length(pids)}}]}
+  def running({:call, from}, {:kill, vus}, data) do
+    {:keep_state, data, [{:reply, from, kill_vus(vus, data)}]}
   end
-
+  
 
   @doc """
   Return the current scenario info
   """
-  def ready({:call, from}, :info, %__MODULE__{
-    error: error,
-    running: running,
-    pending: pending,
-    spec: %Exload{scenario: scenario, vus: vus, iterations: iterations}
-  }=data) do
-    info = [
-        scenario: scenario,
-        vus: [
-          total: vus,
-          success: 0,
-          running: running,
-          pending: pending,
-          failed: error
-        ],
-        iterations: iterations,
-    ]
-    {:keep_state, data, [{:reply, from, {:ok, info}}]}
+  def running({:call, from}, :info, data) do
+    {:keep_state, data, [{:reply, from, {:ok, scenario_info(data)}}]}
   end
 
   @doc """
@@ -134,7 +164,7 @@ defmodule Exload.Scenario.Manager do
   in can later be returned to the user, via the info/1 api
   function
   """
-  def ready(:info, {:DOWN, ref, :process, pid, :killed}, %__MODULE__{
+  def running(:info, {:DOWN, ref, :process, pid, :killed}, %__MODULE__{
     bag: bag, 
     running: running,
     error: error
@@ -142,6 +172,47 @@ defmodule Exload.Scenario.Manager do
     {:ok, bag} = Ets.Bag.delete(bag, {:vu, pid})
     Process.demonitor(ref)
     {:keep_state, %{ data | bag: bag, error: error+1, running: running-1}}
+  end
+
+
+  ## Translate the internal state into an external
+  ## info datastructure
+  defp scenario_info(%__MODULE__{
+    error: error,
+    running: running,
+    pending: pending,
+    spec: %Exload{scenario: scenario, vus: vus, iterations: iterations}
+  }) do
+    [
+      scenario: scenario,
+      vus: [
+        total: vus,
+        success: 0,
+        running: running,
+        pending: pending,
+        failed: error
+      ],
+      iterations: iterations,
+      latency: [
+        ms10: 0,
+        ms25: 0,
+        ms50: 0,
+        ms100: 0,
+        ms250: 0,
+        ms500: 0,
+        ms1000: 0,
+        inf: 0
+      ]
+    ]
+  end
+  
+  defp kill_vus(vus, %__MODULE__{bag: bag}) when vus < 11 do
+    {:ok, {pids, _}} = Ets.Bag.match(bag, {:vu, :"$1"}, vus)
+    pids
+    |> Enum.each(fn [pid] ->
+       Process.exit(pid, :kill)
+    end)
+    {:ok, length(pids)}
   end
 
 end

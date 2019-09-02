@@ -12,15 +12,24 @@ defmodule ExloadTest do
 
   describe "exload" do
     
+    test "should not allow unknown scenarios" do
+      assert {:error, :unknown_scenario} = Exload.run(:unknown, 1, 1)
+    end
+
+    test "should not allow scenarios with unknown modules" do
+      assert {:error, :unknown_scenario_module} = Exload.run(:bad, 1, 1)
+    end
+
     test "should start scenarios once" do
-      assert :ok = Exload.run(:test, 1, 1)
-      assert {:error, _} = Exload.run(:test, 1, 1)
+      assert :ok = Exload.run(:sample, 1, 1)
+      assert {:error, _} = Exload.run(:sample, 1, 1)
     end
     
     test "should return scenario info" do
-      assert :ok = Exload.run(:test, 1, 1)
+      assert :ok = Exload.run(:sample, 1, 1)
+      :timer.sleep(10)
       assert {:ok, [
-        scenario: :test,
+        scenario: :sample,
         vus: [
           total: 1,
           success: 0,
@@ -29,16 +38,26 @@ defmodule ExloadTest do
           failed: 0
         ],
         iterations: 1,
-      ]} = Exload.info(:test)
+        latency: [
+          ms10: _,
+          ms25: _,
+          ms50: _, 
+          ms100: _,
+          ms250: _,
+          ms500: _,
+          ms1000: _,
+          inf: _
+        ]
+      ]} = Exload.info(:sample)
     end
 
-    @tag :wip
     test "should report virtual user failures" do
-      assert :ok = Exload.run(:test, 1, 1)
-      assert {:ok, 1} = Exload.kill(:test, 1)
-      :timer.sleep(50)
+      assert :ok = Exload.run(:sample, 1, 1)
+      :timer.sleep(10)
+      assert {:ok, 1} = Exload.kill(:sample, 1)
+      :timer.sleep(10)
       assert {:ok, [
-        scenario: :test,
+        scenario: :sample,
         vus: [
           total: 1,
           success: 0,
@@ -47,8 +66,10 @@ defmodule ExloadTest do
           failed: 1
         ],
         iterations: 1,
-      ]} = Exload.info(:test)
+        latency: _
+      ]} = Exload.info(:sample)
     end
+
   end
 
 end

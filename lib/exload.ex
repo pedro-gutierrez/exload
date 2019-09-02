@@ -7,7 +7,7 @@ defmodule Exload do
   if it comes from the database, an external API or others.
   """
 
-  defstruct [scenario: :smoke, vus: 1, iterations: 1]  
+  defstruct [scenario: :undef, spec: [], vus: 1, iterations: 1]  
 
   @doc """
   Kill all running scenarios
@@ -16,7 +16,8 @@ defmodule Exload do
     Exload.Scenarios.kill_all()
     :ok
   end
-
+  
+  @scenarios Application.get_env(:Exload, :scenarios)
 
   @doc """
   Start a new run of the given scenario, for the
@@ -26,16 +27,29 @@ defmodule Exload do
   function will return an error.
   """
   def run(scenario, vus, its) do
-    params = %Exload{
-      scenario: scenario, 
-      vus: vus, 
-      iterations: its
-    }
-    case Exload.Scenarios.add(params) do
-      {:ok, _} ->
-        Exload.Scenario.Manager.scale(scenario)
+    case Keyword.fetch(@scenarios, scenario) do
+      {:ok, spec} ->
+        case function_exported?(spec[:module], :__info__, 1) do
+          true ->
+            params = %Exload{
+              scenario: scenario,
+              spec: spec,
+              vus: vus, 
+              iterations: its
+            }
+            case Exload.Scenarios.add(params) do
+              {:ok, _} ->
+                Exload.Scenario.Manager.scale(scenario)
+              other ->
+                other
+            end
+          false ->
+            {:error, :unknown_scenario_module}
+        end
+      :error ->
+        {:error, :unknown_scenario}
       other ->
-        other
+        {:error, other}
     end
   end
 
